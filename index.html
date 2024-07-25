@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pendaftaran</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            /* Menghapus latar belakang gambar dengan mengomentari baris berikut */
+            /* background-image: url('./img/concert-3387324.jpg'); */
+            background-color: #f8f9fa; /* Ganti dengan warna latar belakang yang diinginkan */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .card-custom {
+            max-width: 500px;
+            margin: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparan untuk kontras */
+        }
+        .card-custom:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .card-header-custom {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        #qrCodeContainer {
+            text-align: center;
+        }
+        #saveQrCode {
+            margin-top: 20px;
+        }
+        #pesanButton {
+            display: none; /* Hide the Pesan button initially */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="ml-auto">
+            <button class="btn btn-primary navbar-custom-button" data-toggle="modal" data-target="#caraPesanModal">Cara Pesan</button>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="card card-custom">
+            <div class="card-header card-header-custom text-center">
+                <h2>Pembelian Tiket</h2>
+            </div>
+            <div class="card-body">
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="nama">Nama</label>
+                        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Masukkan email Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telepon">Nomor Telepon</label>
+                        <input type="tel" class="form-control" id="telepon" placeholder="Masukkan nomor telepon Anda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="metodePembayaran">Metode Pembayaran</label>
+                        <select class="form-control" id="metodePembayaran" required>
+                            <option value="">Pilih metode pembayaran</option>
+                            <option value="transfer-bri">BRI</option>
+                            <option value="transfer-bni">BNI</option>
+                            <option value="ovo">OVO</option>
+                            <option value="gopay">GoPay</option>
+                            <option value="dana">DANA</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-success btn-block mt-3" id="beliSekarangButton" onclick="redirectBeliSekarang()">Beli Sekarang</button>
+                    <button type="submit" class="btn btn-primary btn-block mt-3" id="pesanButton">Dapatka QR Code</button>
+                </form>
+                <div id="qrCodeContainer" class="text-center mt-4" style="display: none;">
+                    <h3>QR Code:</h3>
+                    <canvas id="qrCode"></canvas>
+                    <br>
+                    <button id="saveQrCode" class="btn btn-secondary">Simpan QR Code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cara Pesan Modal -->
+    <div class="modal fade" id="caraPesanModal" tabindex="-1" role="dialog" aria-labelledby="caraPesanModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="caraPesanModalLabel">Cara Pemesanan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ol>
+                        <li>Masukkan Nama, Email, dan No Telepon.</li>
+                        <li>Pilih Metode Pembayaran.</li>
+                        <li>Klik 'Beli Sekarang' untuk mengunjungi halaman pembayaran. lalu kembali ke web </li>
+                        <li>Klik 'Pesan' Download QR Code.</li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- QRCode JS -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+    <!-- Custom JS for dynamic message, QR Code generation, and saving QR Code -->
+    <script>
+        function redirectBeliSekarang() {
+            var beliSekarangLink = "https://forms.gle/uNddWaw6QbQfYPgw6"; // Replace with your target link
+            window.open(beliSekarangLink, "_blank");
+            document.getElementById('pesanButton').style.display = 'block'; // Show the Pesan button
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+
+            var nama = document.getElementById('nama').value;
+            var email = document.getElementById('email').value;
+            var telepon = document.getElementById('telepon').value;
+            var metodePembayaran = document.getElementById('metodePembayaran').value;
+
+            // Create a unique identifier for the QR Code
+            var uniqueId = Date.now();
+
+            // Create QR Code data with unique identifier and form data
+            var qrCodeData = `Nama: ${nama}\nEmail: ${email}\nTelepon: ${telepon}\nMetode Pembayaran: ${metodePembayaran}\nID: ${uniqueId}`;
+            
+            QRCode.toCanvas(document.getElementById('qrCode'), qrCodeData, function (error) {
+                if (error) console.error(error);
+                console.log('QR Code generated successfully!');
+            });
+
+            // Display the QR Code and Save button
+            document.getElementById('qrCodeContainer').style.display = 'block';
+        });
+
+        // Save QR Code as image
+        document.getElementById('saveQrCode').addEventListener('click', function() {
+            var canvas = document.getElementById('qrCode');
+            var dataURL = canvas.toDataURL('image/png');
+            var link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'qrcode.png';
+            link.click();
+        });
+    </script>
+</body>
+</html>
